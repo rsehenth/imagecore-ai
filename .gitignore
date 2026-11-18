@@ -1,0 +1,141 @@
+# ImageCore AI — exclusoes para versionamento seguro (Etapa 10).
+# Estrutura real: backend Python (FastAPI), frontend estatico, config/ (workflows + settings local),
+# data/ (todo o runtime), tests/, docs/. Pesos de IA ficam FORA do projeto (models_dir do ComfyUI).
+
+# --- Python: virtualenv, bytecode e caches de ferramentas ---
+.venv/
+venv/
+venv-*/
+.tox/
+.nox/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+coverage.xml
+test-results/
+playwright-report/
+playwright/.cache/
+artifacts/
+
+# --- Ambientes e segredos locais ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+credentials.json
+secrets.json
+secrets.yaml
+secrets.yml
+
+# --- Dados de runtime: banco SQLite (e WAL/SHM), geracoes, projetos, referencias,
+#     backups, uploads e artefatos de teste (data/_smoke) ---
+data/
+
+# Bancos fora de data/ (database_path alternativo no settings local)
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+*.sqlite3-wal
+*.sqlite3-shm
+*.sqlite3-journal
+backups/
+generations/
+uploads/
+references/
+exports/
+
+# --- Configuracao local da maquina (contem caminhos privados, ex.: models_dir do ComfyUI).
+#     Versionar apenas o exemplo: config/settings.example.yaml ---
+config/settings.yaml
+# Caminho local do ComfyUI lido pelo start.bat (Etapa 10.1: sem caminho pessoal versionado)
+config/comfy.local.txt
+config/*.local.yaml
+config/*.local.yml
+config/*.local.json
+config/*.local.txt
+
+# --- Estado local de ferramentas de desenvolvimento (preferencias aprendidas) ---
+.commandcode/
+.impeccable/*
+!.impeccable/design.json
+graphify-out/
+
+# --- Logs e temporarios ---
+*.log
+*.tmp
+*.bak
+.cache/
+temp/
+tmp/
+.playwright-mcp/
+node_modules/
+
+# Build and distribution outputs
+build/
+dist/
+*.exe
+*.dll
+*.msi
+*.whl
+*.zip
+*.7z
+*.tar
+*.gz
+
+# --- Pesos de IA (nunca versionar) ---
+*.safetensors
+*.gguf
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.onnx_data
+*.tflite
+*.torchscript
+*.ggml
+*.pb
+*.weights
+*.bin
+models/
+checkpoints/
+ComfyUI_windows_portable/
+
+# Local imagery and internal development records
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.bmp
+*.tif
+*.tiff
+*.avif
+!docs/images/mesa-de-prova.png
+docs/evidence/
+docs/homologacao-etapa*/
+docs/status.md
+docs/reuse-from-*.md
+docs/generation-backend.md
+docs/model-profiles.md
+docs/quality-benchmarks.md
+
+# --- Sistema operacional / editor ---
+.DS_Store
+Thumbs.db
+desktop.ini

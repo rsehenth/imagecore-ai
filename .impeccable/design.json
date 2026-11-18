@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-17T00:00:00Z",
+  "title": "Design System: ImageCore AI",
+  "extensions": {
+    "colorMeta": {
+      "pink": { "role": "primary", "displayName": "Riso Pink", "canonical": "#d6246e", "tonalRamp": ["#4a0a25", "#750f3b", "#a3124f", "#d6246e", "#e8588f", "#f08fb2", "#f8dde8", "#fcf0f5"] },
+      "blue": { "role": "secondary", "displayName": "Riso Blue", "canonical": "#2e49d1", "tonalRamp": ["#0f1850", "#18267e", "#2338a8", "#2e49d1", "#5f77e0", "#97a7ec", "#dde3fa", "#f1f3fd"] },
+      "ink": { "role": "neutral", "displayName": "Indigo Ink", "canonical": "#17192b", "tonalRamp": ["#17192b", "#2c2f45", "#474a60", "#62657d", "#8a8da3", "#b4b6c4", "#d6d7df", "#ececf0"] },
+      "desk": { "role": "neutral", "displayName": "Desk", "canonical": "#e8e9ec", "tonalRamp": ["#9a9ca6", "#b4b6be", "#c9cad1", "#dcdde1", "#e8e9ec", "#efefed", "#f5f5f3", "#fbfbfa"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "View titles (24px), modal and settings heads (18px)." },
+      "title": { "displayName": "Title", "purpose": "Empty-state headings." },
+      "section": { "displayName": "Section", "purpose": "Inspector, brief and editor panel headings." },
+      "body": { "displayName": "Body", "purpose": "Default running text and hints." },
+      "composer": { "displayName": "Composer", "purpose": "The prompt textarea." },
+      "label": { "displayName": "Label", "purpose": "Field labels, buttons, nav, segmented controls." },
+      "measure": { "displayName": "Measure", "purpose": "Dimensions, seed, percent, zoom, gallery metadata." }
+    },
+    "shadows": [
+      { "name": "shadow-xs", "value": "0 1px 2px rgba(23,25,43,.10)", "purpose": "Selected segment, badges, resting gallery card." },
+      { "name": "shadow-sm", "value": "0 1px 2px rgba(23,25,43,.06), 0 4px 14px -6px rgba(23,25,43,.12)", "purpose": "Composer, inspector, brief, settings sections." },
+      { "name": "shadow-md", "value": "0 2px 4px rgba(23,25,43,.08), 0 14px 34px -12px rgba(23,25,43,.28)", "purpose": "Progress card, gallery card hover." },
+      { "name": "shadow-lg", "value": "0 4px 10px rgba(23,25,43,.10), 0 28px 64px -18px rgba(23,25,43,.42)", "purpose": "Modals and toasts." },
+      { "name": "shadow-proof", "value": "0 1px 2px rgba(23,25,43,.22), 0 16px 34px -14px rgba(23,25,43,.45)", "purpose": "Every image displayed as a proof." },
+      { "name": "generate-halo", "value": "0 6px 16px -8px rgba(214,36,110,.7)", "purpose": "Generate button only." }
+    ],
+    "motion": [
+      { "name": "ease", "value": "cubic-bezier(.22, 1, .36, 1)", "purpose": "Reveals, lifts, progress width, modal rise." },
+      { "name": "state-transition", "value": ".15s", "purpose": "Background, border and color changes on controls." },
+      { "name": "sweep", "value": "1.8s linear infinite", "purpose": "Busy sheen across the stage." },
+      { "name": "reduced-motion", "value": "animation and transition ~0.001ms", "purpose": "Applied by prefers-reduced-motion and data-motion=reduce." }
+    ],
+    "breakpoints": [
+      { "name": "rail-collapse", "value": "1440px" },
+      { "name": "studio-drawer", "value": "1100px-1279px" },
+      { "name": "stack", "value": "1099px" },
+      { "name": "mobile", "value": "760px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Generate Button",
+      "kind": "button",
+      "refersTo": "button-generate",
+      "description": "The one large saturated element; starts a generation.",
+      "html": "<button class=\"ds-btn-generate\">Gerar</button>",
+      "css": ".ds-btn-generate{height:46px;padding:0 24px;border-radius:6px;border:1px solid var(--pink-deep);background:var(--pink);color:#fff;font:600 15px/1 var(--font-ui);box-shadow:0 6px 16px -8px rgba(214,36,110,.7);cursor:pointer;transition:background .15s}.ds-btn-generate:hover{background:var(--pink-hover)}.ds-btn-generate:active{transform:translateY(1px)}.ds-btn-generate:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button-default",
+      "description": "Secondary actions.",
+      "html": "<button class=\"ds-btn\">Exportar</button>",
+      "css": ".ds-btn{height:36px;padding:0 14px;border-radius:6px;border:1px solid var(--line-strong);background:var(--field);color:var(--ink);font:600 13.5px/1 var(--font-ui);cursor:pointer;transition:background .15s,border-color .15s}.ds-btn:hover{background:#fff;border-color:rgba(23,25,43,.42)}.ds-btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Field with blue focus ring.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Seed\">",
+      "css": ".ds-input{width:100%;height:36px;padding:0 10px;background:var(--field);border:1px solid rgba(23,25,43,.55);border-radius:6px;color:var(--ink);font:400 14px var(--font-ui);transition:border-color .15s,box-shadow .15s}.ds-input:hover{border-color:rgba(23,25,43,.72)}.ds-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,73,209,.16);outline:none}"
+    },
+    {
+      "name": "Nav Item",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Rail navigation; active is solid ink.",
+      "html": "<button class=\"ds-nav ds-nav-active\">Image Creator</button>",
+      "css": ".ds-nav{display:flex;align-items:center;height:42px;padding:0 12px;border:0;border-radius:6px;background:transparent;color:var(--ink-2);font:600 14px/1 var(--font-ui);cursor:pointer;transition:background .15s,color .15s}.ds-nav:hover{background:var(--ink-06);color:var(--ink)}.ds-nav-active,.ds-nav-active:hover{background:var(--ink);color:#fff}.ds-nav:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Pill suggestion/filter.",
+      "html": "<button class=\"ds-chip\">Paisagem</button>",
+      "css": ".ds-chip{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:99px;border:1px solid var(--line-strong);background:transparent;color:var(--ink-2);font:500 12.5px/1 var(--font-ui);cursor:pointer;transition:background .15s,color .15s}.ds-chip:hover{background:var(--field);color:var(--ink);border-color:rgba(23,25,43,.42)}.ds-chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}"
+    },
+    {
+      "name": "Proof with Crop Marks",
+      "kind": "custom",
+      "refersTo": "stage",
+      "description": "Signature: an image on Mat with eight crop-mark ticks and a mono proof label.",
+      "html": "<div class=\"ds-mat\"><figure class=\"ds-proof\"><div class=\"ds-img\"></div></figure></div><p class=\"ds-label\">1024 x 1024 px</p>",
+      "css": ".ds-mat{display:grid;place-items:center;padding:36px;background:var(--mat);border:1px solid var(--line);border-radius:14px}.ds-proof{position:relative;margin:0}.ds-img{width:200px;height:140px;background:var(--field);box-shadow:var(--shadow-proof)}.ds-proof::before{content:\"\";position:absolute;inset:-15px;--m:var(--ink-3);background:linear-gradient(var(--m),var(--m)) left 0 top 15px/10px 1px no-repeat,linear-gradient(var(--m),var(--m)) left 15px top 0/1px 10px no-repeat,linear-gradient(var(--m),var(--m)) right 0 top 15px/10px 1px no-repeat,linear-gradient(var(--m),var(--m)) right 15px top 0/1px 10px no-repeat,linear-gradient(var(--m),var(--m)) left 0 bottom 15px/10px 1px no-repeat,linear-gradient(var(--m),var(--m)) left 15px bottom 0/1px 10px no-repeat,linear-gradient(var(--m),var(--m)) right 0 bottom 15px/10px 1px no-repeat,linear-gradient(var(--m),var(--m)) right 15px bottom 0/1px 10px no-repeat}.ds-label{display:flex;align-items:center;gap:9px;margin-top:10px;font:400 12.5px/1.35 var(--font-mono);color:var(--ink-2);font-variant-numeric:tabular-nums}.ds-label::before{content:\"\";width:9px;height:9px;background:var(--pink)}"
+    },
+    {
+      "name": "Overprint Progress",
+      "kind": "custom",
+      "refersTo": "stage",
+      "description": "Pink fill over blue-soft track with a blue multiply copy offset 2px.",
+      "html": "<div class=\"ds-bar\"><div class=\"ds-fill\"></div></div>",
+      "css": ".ds-bar{height:6px;width:280px;background:var(--blue-soft)}.ds-fill{position:relative;height:100%;width:62%;background:var(--pink)}.ds-fill::after{content:\"\";position:absolute;inset:0;background:var(--blue);mix-blend-mode:multiply;transform:translate(2px,2px)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Mesa de Prova",
+    "overview": "The app is a riso print-proofing table. Every generated image is a proof lying on a grey-blue mat, framed by crop marks, and never a dashboard card. The surface is light, cool paper with indigo-black ink. Two spot inks carry all meaning: pink says \"act / generate\", blue says \"selected / focused / informational\". Nothing else is saturated at size.",
+    "keyCharacteristics": [
+      "Light theme only. No dark theme is implemented.",
+      "Pink and blue are the only chromatic voices; status colors are reserved for state.",
+      "Images have sharp corners; controls and panels have small-to-medium radii.",
+      "Measurements are set in tabular mono.",
+      "Compact density mode exists: control height 32px, gap 14px, pad 18px."
+    ],
+    "rules": [
+      { "name": "The Two Inks Rule", "body": "Pink is for doing, blue is for selecting. A control is never both. If something is saturated and large, it is Generate.", "section": "colors" },
+      { "name": "The Mat Rule", "body": "Images always sit on Mat (#dcdde1), never directly on Paper.", "section": "colors" },
+      { "name": "The Mono Is For Measures Rule", "body": "Mono appears only on numbers and identifiers, never as decoration on prose.", "section": "typography" },
+      { "name": "The Paper Shadow Rule", "body": "Shadows are soft, low-contrast and ink-tinted. The only colored shadow is the Generate button's pink halo.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do frame every result image with the crop marks and place it on Mat (#dcdde1).",
+      "Do use Riso Pink only for Generate and primary actions; use Riso Blue for focus, selection and information.",
+      "Do set dimensions, seed, percentages and zoom in tabular mono.",
+      "Do keep image corners square and control radii at 3-6px; panels 14px.",
+      "Do keep shadows ink-tinted and low-contrast; use --shadow-proof for images.",
+      "Do honour prefers-reduced-motion and data-motion=\"reduce\" (animations collapse to ~0ms)."
+    ],
+    "donts": [
+      "Don't return to a dark graphite surface or a cyan accent; that world was discarded.",
+      "Don't present results as a grid of identical dashboard cards in the main stage.",
+      "Don't make a second large saturated element next to Generate.",
+      "Don't use hard offset shadows, gradient text, or glow.",
+      "Don't put mono on prose or uppercase tracking on labels."
+    ]
+  }
+}

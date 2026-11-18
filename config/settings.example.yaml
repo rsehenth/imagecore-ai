@@ -1,0 +1,77 @@
+# ImageCore AI - exemplo de configuracao (versionavel).
+# Copie para config/settings.yaml e ajuste os caminhos da SUA maquina:
+#   copy config\settings.example.yaml config\settings.yaml
+# O arquivo local (config/settings.yaml) e ignorado pelo Git porque pode conter
+# caminhos privados (ex.: raiz de models/ do ComfyUI). Este exemplo nunca deve
+# conter caminhos pessoais nem segredos.
+# Overrides por variavel de ambiente: IMAGECORE_HOST, IMAGECORE_PORT, IMAGECORE_PROVIDER,
+# IMAGECORE_DB_PATH, IMAGECORE_LAN.
+
+app:
+  name: "ImageCore AI"
+  host: "127.0.0.1"        # loopback apenas; rede local exige IMAGECORE_LAN=1
+  port: 8765
+  log_level: "info"
+
+storage:
+  database_path: "data/imagecore.db"
+
+upload:
+  max_image_bytes: 15728640        # 15 MB por imagem enviada
+  max_image_side: 8192             # px, maior lado
+  max_image_pixels: 25000000       # limite de decodificacao (~25 MP)
+  processing_timeout_seconds: 15.0
+  processing_memory_mb: 1024
+  max_references_per_job: 4        # teto do MVP (o workflow define o real)
+  max_pending: 48
+
+generation:
+  max_prompt_chars: 4000
+  max_output_pixels: 17000000      # ~17 MP por imagem gerada/exportada
+
+provider:
+  name: "comfyui"                  # simulated | comfyui
+
+comfyui:
+  base_url: "http://127.0.0.1:8188"
+  workflow: "config/workflows/t2i.sdxl.json"      # texto->imagem (SDXL Base 1.0, checkpoint completo)
+  workflow_i2i: "config/workflows/i2i.sdxl.json"  # imagem->imagem (LoadImage -> VAEEncode -> KSampler denoise)
+  # Raiz de models/ do SEU ComfyUI (Etapa 7): deteccao honesta de pesos por perfil
+  # (instalado x compativel). Ajuste para a instalacao local.
+  models_dir: null
+  timeout_seconds: 900.0
+  poll_interval_seconds: 1.0
+  # ESTIMATIVA base de VRAM (nao medicao) com o SDXL ja carregado em ~1024x1024.
+  estimated_vram_mb: 8500
+  min_free_vram_mb: 1024           # folga minima exigida antes de enfileirar
+  # "Liberar memoria do motor" (POST /free) so e aceito quando esta instancia do
+  # ComfyUI e DEDICADA ao ImageCore AI — declare true SOMENTE se nenhum outro cliente a usa.
+  # dedicated: false
+  # Negative prompt padrao (ingles, vocabulario do SDXL). Vazio = sem padrao.
+  default_negative_prompt: "text, watermark, logo, signature, low quality, worst quality, blurry, jpeg artifacts"
+  interrupt_running: false
+  # Mapeamento do workflow texto->imagem (API format): caminho JSON de cada parametro.
+  node_map:
+    prompt: ["6", "inputs", "text"]
+    negative_prompt: ["7", "inputs", "text"]
+    width: ["5", "inputs", "width"]
+    height: ["5", "inputs", "height"]
+    seed: ["3", "inputs", "seed"]
+    steps: ["3", "inputs", "steps"]
+    cfg: ["3", "inputs", "cfg"]
+    sampler: ["3", "inputs", "sampler_name"]
+  # Mapeamento do workflow imagem->imagem: o latent vem da referencia (VAEEncode),
+  # portanto sem width/height; a intensidade da transformacao e o denoise.
+  node_map_i2i:
+    prompt: ["6", "inputs", "text"]
+    negative_prompt: ["7", "inputs", "text"]
+    seed: ["3", "inputs", "seed"]
+    denoise: ["3", "inputs", "denoise"]
+    steps: ["3", "inputs", "steps"]
+    cfg: ["3", "inputs", "cfg"]
+    sampler: ["3", "inputs", "sampler_name"]
+  # Nos de LoadImage por workflow (1-based). O texto->imagem atual nao usa referencias
+  # (vazio); o imagem->imagem usa exatamente 1.
+  ref_node_map: {}
+  ref_node_map_i2i:
+    1: ["11", "inputs", "image"]
