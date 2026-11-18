@@ -26,6 +26,8 @@ Generate an image from a prompt or reference, bring it into Thumbnail Studio, an
 
 Use **Python 3.12 or later**, PowerShell, and a current browser on Windows. Real image generation also requires a separate ComfyUI installation, a supported checkpoint, and hardware that can run it.
 
+ImageCore AI ran without issues in testing on an NVIDIA GeForce RTX 3080 Ti with 12 GB of VRAM.
+
 From the project root:
 
 ```powershell
