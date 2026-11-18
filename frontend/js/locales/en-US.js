@@ -503,6 +503,8 @@ window.I18N_LOCALES['en-US'] = {
   'error.freeQueueUnverifiable': 'The ComfyUI queue could not be verified: release refused (fail closed).',
   'error.freeRefused': 'ComfyUI refused the memory release.',
   'error.lanOnly': 'Access allowed only on the local network.',
+  'error.lanReadOnly': 'Network access is read-only. Make changes on the computer running ImageCore AI.',
+  'error.localOnly': 'Open ImageCore AI on the computer running it.',
   'error.hostUnauthorized': 'Unauthorized host.',
   'error.crossSiteBlocked': 'Cross-site request blocked.',
   'error.originUnauthorized': 'Unauthorized origin.',

@@ -186,6 +186,8 @@
     free_refused: 'error.freeRefused',
     // seguranca e configuracao
     lan_only: 'error.lanOnly',
+    lan_read_only: 'error.lanReadOnly',
+    local_only: 'error.localOnly',
     host_unauthorized: 'error.hostUnauthorized',
     cross_site_blocked: 'error.crossSiteBlocked',
     origin_unauthorized: 'error.originUnauthorized',

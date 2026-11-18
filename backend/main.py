@@ -34,7 +34,7 @@ logger = logging.getLogger("imagecore")
 
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 _LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
-_MUTATING_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
+_READ_ONLY_METHODS = {"GET", "HEAD", "OPTIONS"}
 _CSP_HEADER = (
     "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
     "img-src 'self' data: blob:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'"
@@ -68,33 +68,39 @@ def _is_private_ip(value: str | None) -> bool:
     return ip.is_loopback or ip.is_private
 
 
-def _is_local_origin_url(url: str, expected_port: int | None, lan_host: str | None = None) -> bool:
+def _is_same_origin_url(url: str, scheme: str, host: str, port: int | None) -> bool:
     try:
         parsed = urlsplit(url.strip())
+        default_port = 443 if scheme == "https" else 80
+        origin_port = parsed.port
     except ValueError:
         return False
-    if parsed.scheme not in ("http", "https") or not parsed.hostname:
-        return False
-    if parsed.hostname.lower() not in _LOOPBACK_HOSTS and parsed.hostname.lower() != lan_host:
-        return False
-    if expected_port is not None:
-        origin_port = parsed.port or (443 if parsed.scheme == "https" else 80)
-        if origin_port != expected_port:
-            return False
-    return True
+    return (
+        parsed.scheme == scheme
+        and parsed.hostname == host
+        and (origin_port if origin_port is not None else default_port) == (port if port is not None else default_port)
+    )
 
 
 def _register_local_security_middleware(app: FastAPI, allow_lan: bool = False) -> None:
-    """`allow_lan`: escuta na rede local; aceita apenas clientes e Hosts que sejam IPs privados literais."""
+    """Permite somente leitura de clientes LAN quando habilitada."""
 
     @app.middleware("http")
     async def local_only_security(request: Request, call_next):
         host_header = request.headers.get("host", "")
         host_name, host_port = _split_host_port(host_header)
-        is_testclient = bool(request.client and request.client.host == "testclient")
+        client_host = request.client.host if request.client else ""
+        is_testclient = client_host == "testclient"
+        is_local_client = client_host in {"127.0.0.1", "::1"} or is_testclient
         lan_host = host_name if allow_lan and _is_private_ip(host_name) else None
-        if allow_lan and not (is_testclient or _is_private_ip(request.client.host if request.client else None)):
-            return JSONResponse(status_code=403, content={"error": "Acesso permitido apenas na rede local.", "error_code": "lan_only"})
+        is_mutating = request.method not in _READ_ONLY_METHODS
+        if not is_local_client:
+            if not allow_lan:
+                return JSONResponse(status_code=403, content={"error": "Acesse o ImageCore AI neste computador.", "error_code": "local_only"})
+            if not _is_private_ip(client_host):
+                return JSONResponse(status_code=403, content={"error": "Acesso permitido apenas na rede local.", "error_code": "lan_only"})
+            if is_mutating:
+                return JSONResponse(status_code=403, content={"error": "Acesso LAN somente para leitura.", "error_code": "lan_read_only"})
         if host_name not in _LOOPBACK_HOSTS and lan_host is None and not (is_testclient and host_name == "testserver"):
             return JSONResponse(status_code=403, content={"error": "Host nao autorizado.", "error_code": "host_unauthorized"})
 
@@ -102,17 +108,17 @@ def _register_local_security_middleware(app: FastAPI, allow_lan: bool = False) -
         if sec_fetch_site == "cross-site":
             return JSONResponse(status_code=403, content={"error": "Requisicao cross-site bloqueada.", "error_code": "cross_site_blocked"})
 
-        is_api_or_mutating = request.url.path.startswith("/api") or request.method in _MUTATING_METHODS
+        is_api_or_mutating = request.url.path.startswith("/api") or is_mutating
         if is_api_or_mutating:
             origin = request.headers.get("origin")
             if origin is not None:
-                if not _is_local_origin_url(origin, host_port, lan_host):
+                if not _is_same_origin_url(origin, request.url.scheme, host_name, host_port):
                     return JSONResponse(status_code=403, content={"error": "Origem nao autorizada.", "error_code": "origin_unauthorized"})
-            elif request.method in _MUTATING_METHODS:
+            elif is_mutating:
                 if sec_fetch_site and sec_fetch_site not in ("same-origin", "none"):
                     return JSONResponse(status_code=403, content={"error": "Origem de requisicao bloqueada.", "error_code": "origin_blocked"})
                 referer = request.headers.get("referer")
-                if referer and not _is_local_origin_url(referer, host_port, lan_host):
+                if referer and not _is_same_origin_url(referer, request.url.scheme, host_name, host_port):
                     return JSONResponse(status_code=403, content={"error": "Referer nao autorizado.", "error_code": "referer_unauthorized"})
 
         response = await call_next(request)
@@ -210,6 +216,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.projects = projects
         app.state.provider = provider
         app.state.jobs = jobs
+        if settings.app.allow_lan:
+            logger.warning("Acesso LAN sem autenticacao: dispositivos da rede podem ler dados do ImageCore AI.")
         logger.info(
             "ImageCore AI iniciado | provider=%s db=%s porta=%d", provider.name, settings.storage.database_path, settings.app.port
         )
@@ -288,6 +296,7 @@ if __name__ == "__main__":
             host=runtime_settings.app.host,
             port=runtime_settings.app.port,
             log_level=runtime_settings.app.log_level,
+            proxy_headers=False,
         )
     finally:
         _lock_handle.close()

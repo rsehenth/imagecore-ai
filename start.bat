@@ -5,8 +5,7 @@ cd /d "%~dp0"
 rem ============================================================
 rem  ImageCore AI - inicializacao local (Windows)
 rem  - Sobe o motor ComfyUI (porta 8188) e o backend (porta 8765).
-rem  - Backend escuta na rede local por padrao (celular no mesmo Wi-Fi);
-rem    ENABLE_LAN=0 no inicio do arquivo volta para somente loopback.
+rem  - Backend usa loopback por padrao; start.bat --lan habilita leitura na rede local.
 rem  - Reutiliza o ComfyUI caso o motor ja esteja ativo na porta 8188.
 rem ============================================================
 
@@ -17,8 +16,8 @@ if not defined COMFY_DIR if exist "config\comfy.local.txt" set /p COMFY_DIR=<"co
 set "COMFY_URL=http://127.0.0.1:8188/system_stats"
 set "BACKEND_URL=http://127.0.0.1:8765/api/health"
 
-rem Acesso pelo Wi-Fi local (celular): 1 = habilitado, 0 = somente loopback.
-set "ENABLE_LAN=1"
+set "ENABLE_LAN=0"
+if /i "%~1"=="--lan" set "ENABLE_LAN=1"
 
 if not exist ".venv\Scripts\python.exe" (
     echo [ImageCore AI] Virtual environment not found in .venv
@@ -96,8 +95,7 @@ echo   Interface:  http://127.0.0.1:8765
 if "%ENABLE_LAN%"=="1" powershell -NoProfile -Command "Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue | Where-Object { $_.IPAddress -notlike '127.*' -and $_.IPAddress -notlike '169.254.*' } | ForEach-Object { Write-Host ('  Phone/WiFi: http://' + $_.IPAddress + ':8765') }"
 echo   Engine:     ComfyUI at http://127.0.0.1:8188 (local only)
 echo ============================================================
-if "%ENABLE_LAN%"=="1" echo   Open the Phone/WiFi URL on a device in the same network.
-if "%ENABLE_LAN%"=="1" echo   If the phone cannot connect, allow Python through Windows Firewall.
+if "%ENABLE_LAN%"=="1" echo   WARNING: LAN access is read-only and unauthenticated. Network devices can view your data.
 echo.
 
 ".venv\Scripts\python.exe" -m backend.main

@@ -60,7 +60,9 @@ The simulated provider creates labeled placeholders without a GPU. You can try t
 4. Open `config/settings.yaml` and set `comfyui.models_dir` to the ComfyUI `models` directory. Confirm the endpoint and keep the included SDXL workflow paths.
 5. Run `.\.venv\Scripts\python.exe -m backend.main` and check the engine and SDXL profile in **Settings**.
 
-The direct launch listens on loopback. The optional `start.bat` launcher can start a Windows NVIDIA Portable installation and enables LAN access by default. To use the launcher, supply the installation folder in `COMFY_DIR` or on the first line of `config/comfy.local.txt`. Set `ENABLE_LAN=0` in the batch file to keep it on loopback.
+Both launch methods listen on `127.0.0.1` by default. The optional `start.bat` launcher can start a Windows NVIDIA Portable installation. Supply the installation folder in `COMFY_DIR` or on the first line of `config/comfy.local.txt`.
+
+For LAN access, explicitly run `.\start.bat --lan` or set `IMAGECORE_LAN=1` and `IMAGECORE_HOST` to a private interface IP (or `0.0.0.0` for all IPv4 interfaces) before a direct launch. **LAN access is read-only and unauthenticated.** Devices on the network can view images, prompts, projects and diagnostics. Connect directly on a trusted network and keep the service off the internet. Open `http://127.0.0.1:8765` on the host to make changes.
 
 ## Model support
 

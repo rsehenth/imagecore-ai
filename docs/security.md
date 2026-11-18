@@ -1,10 +1,11 @@
 # Seguranca e isolamento
 
 ## Rede e API local
-- Bind **loopback por padrao** (127.0.0.1:8765); rede local so com opt-in (`IMAGECORE_LAN=1`) e apenas IPs privados literais.
-- A API é de usuário único e não exige autenticação. No modo LAN, dispositivos da rede local podem acessar e alterar a Galeria.
+- Bind padrão em **127.0.0.1:8765**. Para habilitar LAN, use `start.bat --lan` ou configure `IMAGECORE_LAN=1` e `IMAGECORE_HOST` com um IP da interface local. `0.0.0.0` escuta em todas as interfaces IPv4. Em YAML, as opções equivalentes são `app.allow_lan` e `app.host`.
+- A API é de usuário único e não exige autenticação. Em LAN, dispositivos da rede podem ler imagens, prompts, projetos e diagnósticos. Use somente uma rede de confiança e mantenha o serviço fora da internet e de proxies reversos.
+- Conexões de fora do loopback só podem usar `GET`, `HEAD` e `OPTIONS` no modo LAN. Geração, cancelamento, exclusões, uploads, alterações de projetos, exportações e liberação de VRAM exigem loopback. A inicialização oficial ignora cabeçalhos de proxy ao identificar o cliente.
 - Middleware anti DNS-rebinding: Host tem de ser loopback (ou IP privado no modo LAN) -> 403.
-- `Sec-Fetch-Site: cross-site` bloqueado; Origin/Referer validados contra host:porta em metodos mutantes e `/api`.
+- `Sec-Fetch-Site: cross-site` bloqueado. A API valida `Origin` quando presente. Em métodos de escrita, o middleware valida `Referer` quando presente e quando `Origin` está ausente. A comparação exige esquema, host e porta iguais.
 - Cabecalhos: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`; CSP fora de `/api` (`default-src 'self'; script-src 'self'; img-src 'self' data: blob:`).
 - Instancia unica: lock de arquivo + probe da porta antes do uvicorn.
 

@@ -503,6 +503,8 @@ window.I18N_LOCALES['pt-BR'] = {
   'error.freeQueueUnverifiable': 'Fila do ComfyUI não pôde ser verificada: liberação recusada (fail closed).',
   'error.freeRefused': 'O ComfyUI recusou a liberação de memória.',
   'error.lanOnly': 'Acesso permitido apenas na rede local.',
+  'error.lanReadOnly': 'O acesso pela rede é somente para leitura. Faça alterações no computador que executa o ImageCore AI.',
+  'error.localOnly': 'Abra o ImageCore AI no computador que o executa.',
   'error.hostUnauthorized': 'Host não autorizado.',
   'error.crossSiteBlocked': 'Requisição cross-site bloqueada.',
   'error.originUnauthorized': 'Origem não autorizada.',
